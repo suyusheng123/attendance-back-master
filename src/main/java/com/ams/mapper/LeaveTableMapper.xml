@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.dao.LeaveTableMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ams.pojo.LeaveTable">
+        <id column="id" property="id" />
+        <result column="staff_id" property="staffId" />
+        <result column="staff_name" property="staffName" />
+        <result column="staff_department" property="staffDepartment" />
+        <result column="leave_type" property="leaveType" />
+        <result column="travel_vehicle" property="travelVehicle" />
+        <result column="prepaid_expenses" property="prepaidExpenses" />
+        <result column="leave_time" property="leaveTime" />
+        <result column="leave_begin_time" property="leaveBeginTime" />
+        <result column="leave_end_time" property="leaveEndTime" />
+        <result column="leave_reason" property="leaveReason" />
+        <result column="audit_state" property="auditState" />
+        <result column="approver_suggestion" property="approverSuggestion" />
+        <result column="audit_result" property="auditResult" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, staff_id, staff_name, staff_department, leave_type, travel_vehicle, prepaid_expenses, leave_time,
+        leave_begin_time, leave_end_time, leave_reason, audit_state,approver_suggestion, audit_result
+    </sql>
+
+    <select id="selectbyAllQingjia" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+        leave_table
+        WHERE leave_type = "请假" and audit_result = "通过"
+        and leave_begin_time >= #{param1} AND  #{param2} > leave_begin_time
+    </select>
+    <select id="selectbyAllBumenQingjia" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+        leave_table
+        WHERE leave_type = "请假" and audit_result = "通过" and staff_department = #{param3}
+        and leave_begin_time >= #{param1} AND  #{param2} > leave_begin_time
+    </select>
+    <select id="selectbyAllChuchai" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+        leave_table
+            WHERE leave_type = "出差" and audit_result = "通过"
+        and leave_begin_time >= #{param1} AND  #{param2} > leave_begin_time
+    </select>
+    <select id="selectbyAllBumenChuchai" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+        leave_table
+        WHERE leave_type = "出差" and audit_result = "通过" and staff_department = #{param3}
+        and leave_begin_time >= #{param1} AND  #{param2} > leave_begin_time
+    </select>
+<!--    ==========================================考勤-->
+    <select id="selectbyAllKaoqing" resultType="java.lang.Integer">
+
+        SELECT count(*) FROM
+        attendance
+        WHERE remarks = #{param3}
+        and clock_date >=#{param1}  AND  #{param2} > clock_date
+    </select>
+    <select id="selectbyAllKaoqingBumen" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+        attendance
+        WHERE remarks = #{param3}   AND department= #{param4}
+        and clock_date >=#{param1}  AND  #{param2} > clock_date
+    </select>
+
+    <select id="selectToDay" resultType="com.ams.pojo.LeaveTable">
+        select
+        <include refid="Base_Column_List"></include>
+        from leave_table
+        where NOW() >= leave_begin_time and leave_end_time >= NOW() and audit_result="通过"
+    </select>
+<!--=================-->
+
+    <select id="selectQingjiaMax" resultType="com.ams.pojo.QingjiaMax">
+
+        SELECT staff_name as name,count(leave_type) as num FROM leave_table
+        WHERE leave_type="请假" and audit_result="通过"
+          and leave_begin_time >= #{param1} and #{param2}>leave_begin_time
+        GROUP BY staff_name
+        ORDER BY COUNT(leave_type) DESC
+
+
+    </select>
+    <select id="selectChidaoMax" resultType="com.ams.pojo.QingjiaMax">
+        SELECT staff_name as name,count(remarks) as num FROM attendance
+        WHERE remarks=#{param3}
+          and clock_date >= #{param1} and #{param2}>clock_date
+        GROUP BY staff_name
+        ORDER BY COUNT(remarks) DESC
+
+    </select>
+    <select id="selectAllQingjiaMax" resultType="com.ams.pojo.QingjiaMax">
+        SELECT staff_name as name,count(leave_type) as num FROM leave_table
+        WHERE leave_type="请假" and audit_result="通过"
+        GROUP BY staff_name
+        ORDER BY COUNT(leave_type) DESC
+    </select>
+    <select id="selectAllChidaoMax" resultType="com.ams.pojo.QingjiaMax">
+        SELECT staff_name as name,count(remarks) as num FROM attendance
+        WHERE remarks=#{param1}
+        GROUP BY staff_name
+        ORDER BY COUNT(remarks) DESC
+
+    </select>
+<!--    查询请假或出差-->
+    <select id="selectBeginEnd" resultType="java.lang.Integer">
+        select count(*)
+        from leave_table
+        where staff_id = #{staffId} and #{nowDate} >= leave_begin_time and leave_end_time >= #{nowDate} and audit_result="通过"
+    </select>
+
+
+    <!--    ================-->
+</mapper>

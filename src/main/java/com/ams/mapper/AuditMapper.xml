@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.dao.AuditMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ams.pojo.Audit">
+        <id column="id" property="id" />
+        <result column="approver_id" property="approverId" />
+        <result column="staff_id" property="staffId" />
+        <result column="approver_name" property="approverName" />
+        <result column="leave_type" property="leaveType" />
+        <result column="approver_department" property="approverDepartment" />
+        <result column="approver_suggestion" property="approverSuggestion" />
+        <result column="audit_result" property="auditResult" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, approver_id,staff_id, approver_name, leave_type, approver_department, approver_suggestion, audit_result
+    </sql>
+
+
+</mapper>

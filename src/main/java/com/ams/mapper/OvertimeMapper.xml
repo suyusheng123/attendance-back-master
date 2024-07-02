@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.dao.OvertimeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ams.pojo.Overtime">
+        <id column="id" property="id" />
+        <result column="staff_id" property="staffId" />
+        <result column="staff_name" property="staffName" />
+        <result column="staff_development" property="staffDevelopment" />
+        <result column="apply_time" property="applyTime" />
+        <result column="over_begin" property="overBegin" />
+        <result column="over_end" property="overEnd" />
+        <result column="audit_state" property="auditState" />
+        <result column="approve_reason" property="approveReason" />
+        <result column="audit_result" property="auditResult" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, staff_id, staff_name, staff_development, apply_time, over_begin, over_end, audit_state, approve_reason, audit_result
+    </sql>
+    <select id="queryOverTime" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+            overtime
+        WHERE audit_result = "通过"
+          and over_begin >= #{param1} AND  #{param2} > over_begin
+    </select>
+    <select id="selectDepartOvertime" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+            overtime
+        WHERE audit_result = "通过" and staff_development = #{param3}
+          and over_begin >= #{param1} AND  #{param2} > over_begin
+    </select>
+    <select id="queryAttendance" resultType="java.lang.Integer">
+        SELECT count(*) FROM
+            attendance
+        WHERE remarks = #{param3}
+          and clock_date >=#{param1}  AND  #{param2} > clock_date
+    </select>
+    <select id="selectMonth" resultType="java.lang.Integer">
+        SELECT count(DISTINCT DATE_FORMAT(over_begin, '%Y-%m-%d')) FROM
+            overtime
+        WHERE audit_result = "通过"
+          and DATE_FORMAT(over_begin, '%Y-%m-%d') >= #{param1} AND  #{param2} > DATE_FORMAT(over_begin, '%Y-%m-%d')
+    </select>
+    <select id="selectDept" resultType="java.lang.Integer">
+        SELECT count(DISTINCT DATE_FORMAT(over_begin, '%Y-%m-%d')) FROM
+            overtime
+        WHERE audit_result = "通过" and staff_development = #{param3}
+          and DATE_FORMAT(over_begin, '%Y-%m-%d') >= #{param1} AND  #{param2} > DATE_FORMAT(over_begin, '%Y-%m-%d')
+    </select>
+<!--查询用户在今天之内有没有加班申请了    -->
+    <select id="selectByStaffIdApplyTime" resultType="java.lang.Integer">
+        select count(*) from overtime where staff_id = #{staffId} and DATE_FORMAT(apply_time,'%Y-%m-%d') = #{applyTime}
+    </select>
+
+
+</mapper>

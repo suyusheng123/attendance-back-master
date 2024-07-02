@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.dao.AttendanceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ams.pojo.Attendance">
+        <id column="id" property="id"/>
+        <result column="staff_id" property="staffId"/>
+        <result column="staff_name" property="staffName"/>
+        <result column="department" property="department"/>
+        <result column="clock_in_time" property="clockInTime"/>
+        <result column="clock_out_time" property="clockOutTime"/>
+        <result column="clock_date" property="clockDate"/>
+        <result column="remarks" property="remarks"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, staff_id, staff_name, department, clock_in_time, clock_out_time, clock_date, remarks
+    </sql>
+    <update id="updateState">
+        update attendance set state = #{i} where department = #{deptName};
+    </update>
+
+    <!--###########通过staffId查询################-->
+    <select id="selectByStaffId"  parameterType="com.ams.pojo.Attendance" resultMap="BaseResultMap">
+        select id, staff_id, staff_name, department, clock_in_time, clock_out_time, clock_date, remarks
+        from attendance where staff_id=#{staffId} and clock_date =#{clockDate} and state = 0
+    </select>
+    <select id="selectByStaffIdList" parameterType="com.ams.pojo.Attendance" resultMap="BaseResultMap">
+        select id, staff_id, staff_name, department, clock_in_time, clock_out_time, clock_date, remarks
+        from attendance where staff_id=#{staffId} and clock_date =#{clockDate} and state = 0
+    </select>
+<!--
+  查询用户是否已经打过卡了
+-->
+    <select id="selectIntime" resultType="java.lang.Integer">
+        select count(*) from attendance where staff_id=#{staffId} and clock_date =#{nowDate} and clock_in_time is not null
+        and state = 0
+    </select>
+    <select id="selectOuttime" resultType="java.lang.Integer">
+        select count(*) from attendance where staff_id=#{staffId} and clock_date =#{nowDate} and clock_out_time is not null
+        and state = 0
+    </select>
+
+
+</mapper>

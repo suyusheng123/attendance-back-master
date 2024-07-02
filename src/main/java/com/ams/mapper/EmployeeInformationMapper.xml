@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ams.dao.EmployeeInformationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ams.pojo.EmployeeInformation">
+        <id column="id" property="id"/>
+        <result column="staff_id" property="staffId"/>
+        <result column="staff_name" property="staffName"/>
+        <result column="staff_sex" property="staffSex"/>
+        <result column="staff_pwd" property="staffPwd"/>
+        <result column="department" property="department"/>
+        <result column="sys_role" property="sysRole"/>
+        <result column="staff_phone" property="staffPhone"/>
+        <result column="staff_email" property="staffEmail"/>
+        <result column="leave_time" property="leaveTime"/>
+        <result column="late_time" property="lateTime"/>
+        <result column="early_time" property="earlyTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, staff_id,staff_name,staff_sex, staff_pwd, department, sys_role, staff_phone, staff_email, leave_time,
+        late_time, early_time
+    </sql>
+    <update id="updatePwdByStaffId" parameterType="com.ams.pojo.EmployeeInformation">
+        update employee_information
+        set staff_pwd =#{staffPwd}
+        where staff_id = #{staffId}
+    </update>
+    <update id="updateByStaffId">
+        update employee_information
+        set late_time = #{i} where staff_id = #{staffId}
+    </update>
+    <delete id="delByStaffId">
+        delete
+        from employee_information
+        where staff_id = #{id}
+    </delete>
+    <select id="selectByStaffId"
+            resultType="com.ams.pojo.EmployeeInformation">
+        select id,
+               staff_id,
+               staff_name,
+               staff_sex,
+               staff_pwd,
+               department,
+               sys_role,
+               staff_phone,
+               staff_email,
+               leave_time,
+               late_time,
+               early_time
+        from employee_information
+        where staff_id = #{staffId};
+
+    </select>
+
+</mapper>
